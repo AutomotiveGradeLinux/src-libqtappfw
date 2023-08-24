@@ -1,17 +1,7 @@
  /*
- * Copyright (C) 2019-2022 Konsulko Group
+ * Copyright (C) 2019-2023 Konsulko Group
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef NAVIGATION_H
@@ -19,6 +9,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QMutex>
 
 class VehicleSignals;
 
@@ -27,7 +18,7 @@ class Navigation : public QObject
 	Q_OBJECT
 
 public:
-	explicit Navigation(VehicleSignals *vs, QObject *parent = Q_NULLPTR);
+	explicit Navigation(VehicleSignals *vs, bool router = false, QObject *parent = Q_NULLPTR);
 	virtual ~Navigation();
 
 	Q_INVOKABLE void broadcastPosition(double lat, double lon, double drc, double dst);
@@ -44,19 +35,29 @@ signals:
 
 private slots:
 	void onConnected();
-	void onAuthorized();
-	void onDisconnected();
 	void onSignalNotification(QString path, QString value, QString timestamp);
+	void onSignalNotificationRouter(QString path, QString value, QString timestamp);
 
 private:
+	void handlePositionUpdate();
+
 	VehicleSignals *m_vs;
-	bool m_connected;
+	bool m_router = false;
+	bool m_connected = false;
+
+	QMutex m_position_mutex;
 	double m_latitude;
+	bool m_latitude_set = false;
 	double m_longitude;
+	bool m_longitude_set = false;
 	double m_heading;
-	double m_distance;
+	bool m_heading_set = false;
+	double m_distance = 0.0;
+	bool m_distance_set = false;
 	double m_dest_latitude;
+	bool m_dest_latitude_set = false;
 	double m_dest_longitude;
+	bool m_dest_longitude_set = false;
 };
 
 #endif // NAVIGATION_H

@@ -29,8 +29,6 @@ HVAC::HVAC(VehicleSignals *vs, QObject * parent) :
 	m_temp_right_zone(21)
 {
 	QObject::connect(m_vs, &VehicleSignals::connected, this, &HVAC::onConnected);
-	QObject::connect(m_vs, &VehicleSignals::authorized, this, &HVAC::onAuthorized);
-	QObject::connect(m_vs, &VehicleSignals::disconnected, this, &HVAC::onDisconnected);
 
 	if (m_vs)
 		m_vs->connect();
@@ -48,7 +46,7 @@ void HVAC::set_fanspeed(int speed)
 
 	// Scale incoming 0-255 speed to 0-100 to match VSS signal
 	double value = (speed % 256) * 100.0 / 255.0;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.FanSpeed", QString::number((int) (value + 0.5)));
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.FanSpeed", (unsigned int) (value + 0.5), true);
 	emit fanSpeedChanged(speed);
 }
 
@@ -63,7 +61,7 @@ void HVAC::set_temp_left_zone(int temp)
 		value = 50;
 	else if (value < -50)
 		value = -50;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.Temperature", QString::number(value));
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.Temperature", value, true);
 	emit leftTemperatureChanged(temp);
 }
 
@@ -78,7 +76,7 @@ void HVAC::set_temp_right_zone(int temp)
 		value = 50;
 	else if (value < -50)
 		value = -50;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Right.Temperature", QString::number(value));
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Right.Temperature", value, true);
 	emit rightTemperatureChanged(temp);
 }
 
@@ -87,21 +85,8 @@ void HVAC::onConnected()
 	if (!m_vs)
 		return;
 
-	m_vs->authorize();
-}
-
-void HVAC::onAuthorized()
-{
-	if (!m_vs)
-		return;
-
 	// Could subscribe and connect notification signal here to monitor
 	// external updates...
 
 	m_connected = true;
-}
-
-void HVAC::onDisconnected()
-{
-	m_connected = false;
 }

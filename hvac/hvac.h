@@ -45,8 +45,6 @@ signals:
 
 private slots:
 	void onConnected();
-	void onAuthorized();
-	void onDisconnected();
 
 private:
 	VehicleSignals *m_vs;
