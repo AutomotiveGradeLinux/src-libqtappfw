@@ -46,7 +46,7 @@ void HVAC::set_fanspeed(int speed)
 
 	// Scale incoming 0-255 speed to 0-100 to match VSS signal
 	double value = (speed % 256) * 100.0 / 255.0;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.FanSpeed", (unsigned int) (value + 0.5), true);
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Driver.FanSpeed", (unsigned int) (value + 0.5), true);
 	emit fanSpeedChanged(speed);
 }
 
@@ -61,7 +61,7 @@ void HVAC::set_temp_left_zone(int temp)
 		value = 50;
 	else if (value < -50)
 		value = -50;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Left.Temperature", value, true);
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Driver.Temperature", value, true);
 	emit leftTemperatureChanged(temp);
 }
 
@@ -76,7 +76,7 @@ void HVAC::set_temp_right_zone(int temp)
 		value = 50;
 	else if (value < -50)
 		value = -50;
-	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Right.Temperature", value, true);
+	m_vs->set("Vehicle.Cabin.HVAC.Station.Row1.Passenger.Temperature", value, true);
 	emit rightTemperatureChanged(temp);
 }
 
