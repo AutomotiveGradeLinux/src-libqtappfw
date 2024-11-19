@@ -160,7 +160,7 @@ void VehicleSignals::onSubscribeDone(const QMap<QString, bool> &signals_, bool c
 {
 	if (!canceled) {
 		// queue up a resubscribe attempt
-		QFuture<void> future = QtConcurrent::run(this, &VehicleSignals::resubscribe, signals_);
+		QFuture<void> future = QtConcurrent::run(&VehicleSignals::resubscribe, this, signals_);
 	}
 }
 

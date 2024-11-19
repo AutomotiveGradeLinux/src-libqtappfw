@@ -1,4 +1,4 @@
-qt5_dep = dependency('qt5', modules: ['Qml'])
+qt_dep = dependency('qt6', modules: ['Qml'])
 
 mpdclient_dep = dependency('libmpdclient')
 
@@ -8,8 +8,8 @@ mediaplayer_headers = [ 'MediaplayerBackend.h',
                         'MpdEventHandler.h',
                         'mediaplayer.h'
 ]
-moc_files = qt5.compile_moc(headers: mediaplayer_headers,
-                            dependencies: qt5_dep)
+moc_files = qt.compile_moc(headers: mediaplayer_headers,
+                            dependencies: qt_dep)
 
 src = [ 'MediaplayerBackend.cpp',
         'MediaplayerBluezBackend.cpp',
@@ -22,7 +22,7 @@ lib = shared_library('qtappfw-mediaplayer',
                      sources: src,
                      version: '1.0.0',
                      soversion: '0',
-                     dependencies: [qt5_dep, mpdclient_dep, qtappfw_bt_dep, qtappfw_vs_dep],
+                     dependencies: [qt_dep, mpdclient_dep, qtappfw_bt_dep, qtappfw_vs_dep],
                      install: true)
 
 install_headers('mediaplayer.h')
@@ -32,5 +32,5 @@ pkg_mod.generate(libraries: lib,
                  version: '1.0',
                  name: 'libqtappfw-mediaplayer',
                  filebase: 'qtappfw-mediaplayer',
-                 requires: 'Qt5Qml',
+                 requires: 'Qt6Qml',
                  description: 'Library wrapping AGL mediaplayer API in Qt objects')

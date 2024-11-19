@@ -1,10 +1,10 @@
 cpp = meson.get_compiler('cpp')
 grpcpp_reflection_dep = cpp.find_library('grpc++_reflection')
 
-qt5_dep = dependency('qt5', modules: ['Core', 'Concurrent'])
+qt_dep = dependency('qt6', modules: ['Core', 'Concurrent'])
 
 vs_dep = [
-    qt5_dep,
+    qt_dep,
     dependency('protobuf'),
     dependency('grpc'),
     dependency('grpc++'),
@@ -30,14 +30,14 @@ grpc_gen = generator(protoc, \
                      output : ['@BASENAME@.grpc.pb.cc', '@BASENAME@.grpc.pb.h'],
                      arguments : ['-I=' + protos_base_dir,
                        '--grpc_out=@BUILD_DIR@',
-                       '--plugin=protoc-gen-grpc=' + grpc_cpp.path(),
+                       '--plugin=protoc-gen-grpc=' + grpc_cpp.full_path(),
                        '@INPUT@'])
 generated_grpc_sources = [ \
     grpc_gen.process(protos_dir / 'val.proto', preserve_path_from : protos_base_dir),
 ]
 
-moc_files = qt5.compile_moc(headers: [ 'vehiclesignals.h', 'QtKuksaClient.h' ],
-                            dependencies: qt5_dep)
+moc_files = qt.compile_moc(headers: [ 'vehiclesignals.h', 'QtKuksaClient.h' ],
+                            dependencies: qt_dep)
 
 src = [
     'vehiclesignals.cpp',
@@ -62,10 +62,10 @@ pkg_mod.generate(libraries: lib,
                  version: '1.0',
                  name: 'libqtappfw-vehicle-signals',
                  filebase: 'qtappfw-vehicle-signals',
-                 requires: ['Qt5Core'],
+                 requires: ['Qt6Core'],
                  description: 'Library wrapping VSS API in Qt objects')
 
-qtappfw_vs_dep = declare_dependency(dependencies: qt5_dep,
+qtappfw_vs_dep = declare_dependency(dependencies: qt_dep,
                                     link_with: lib,
                                     include_directories: '.',
                                     sources: ['vehiclesignals.h'])

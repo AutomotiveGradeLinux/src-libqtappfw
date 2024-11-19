@@ -84,7 +84,7 @@ QtKuksaClient::QtKuksaClient(const std::shared_ptr< ::grpc::ChannelInterface>& c
 void QtKuksaClient::connect()
 {
 	// Check for connection in another thread
-	QFuture<void> future = QtConcurrent::run(this, &QtKuksaClient::waitForConnected);
+	QFuture<void> future = QtConcurrent::run(&QtKuksaClient::waitForConnected, this);
 }
 
 void QtKuksaClient::get(const QString &path, const bool actuator)

@@ -241,7 +241,7 @@ void Pbap::updateCalls(QJsonArray vcards)
                 name = number;
         }
 
-        QStringList typelist = entry.value("type").toString().split(QRegExp("="));
+        QStringList typelist = entry.value("type").toString().split(QRegularExpression("="));
         type = typelist.takeLast();
 
         datetime = entry.value("timestamp").toString();

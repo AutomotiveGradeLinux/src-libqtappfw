@@ -248,5 +248,5 @@ bool BluetoothModelFilter::filterAcceptsRow(int sourceRow, const QModelIndex &so
 	QModelIndex index = model->index(sourceRow);
 	bool paired = model->data(index, BluetoothModel::BluetoothRoles::PairedRole).toBool();
 
-	return ((paired ? "true" : "false") == filterRegExp().pattern());
+	return ((paired ? "true" : "false") == filterRegularExpression().pattern());
 }

@@ -62,7 +62,7 @@ class Contact : public QObject
 
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString photo READ photo NOTIFY photoChanged)
-    Q_PROPERTY(QQmlListProperty<PhoneNumber>numbers READ numbersList NOTIFY numbersListChanged)
+    Q_PROPERTY(QQmlListProperty<PhoneNumber> numbers READ numbersList NOTIFY numbersListChanged)
 
     public:
         explicit Contact(QString name, QString photo, QList<PhoneNumber *>numbers);
@@ -75,11 +75,11 @@ class Contact : public QObject
         QQmlListProperty<PhoneNumber>numbersList() {
             return QQmlListProperty<PhoneNumber>(this, 0, &Contact::countNumbers, &Contact::atNumbers);
         }
-        static int countNumbers(QQmlListProperty<PhoneNumber> *property) {
+        static qsizetype countNumbers(QQmlListProperty<PhoneNumber> *property) {
             Contact *contact = qobject_cast<Contact *>(property->object);
             return contact->m_numbers.size();
         }
-        static PhoneNumber *atNumbers(QQmlListProperty<PhoneNumber> *property, int index) {
+        static PhoneNumber *atNumbers(QQmlListProperty<PhoneNumber> *property, qsizetype index) {
             Contact *contact = qobject_cast<Contact *>(property->object);
             return contact->m_numbers[index];
         }

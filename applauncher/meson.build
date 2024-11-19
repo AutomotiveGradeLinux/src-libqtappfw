@@ -1,9 +1,9 @@
 cpp = meson.get_compiler('cpp')
 grpcpp_reflection_dep = cpp.find_library('grpc++_reflection')
 
-qt5_dep = dependency('qt5', modules: ['Qml'])
+qt_dep = dependency('qt6', modules: ['Qml'])
 applauncher_dep = [
-    qt5_dep,
+    qt_dep,
     dependency('protobuf'),
     dependency('grpc'),
     dependency('grpc++'),
@@ -24,12 +24,12 @@ grpc_gen = generator(protoc, \
                      output : ['@BASENAME@.grpc.pb.cc', '@BASENAME@.grpc.pb.h'],
                      arguments : ['--proto_path=@CURRENT_SOURCE_DIR@/protos',
                        '--grpc_out=@BUILD_DIR@',
-                       '--plugin=protoc-gen-grpc=' + grpc_cpp.path(),
+                       '--plugin=protoc-gen-grpc=' + grpc_cpp.full_path(),
                        '@INPUT@'])
 generated_grpc_sources = grpc_gen.process('protos/applauncher.proto')
 
-moc_files = qt5.compile_moc(headers : ['AppLauncherClient.h', 'AppLauncherGrpcClient.h'],
-                            dependencies: qt5_dep)
+moc_files = qt.compile_moc(headers : ['AppLauncherClient.h', 'AppLauncherGrpcClient.h'],
+                            dependencies: qt_dep)
 
 src = [
     'AppLauncherClient.cpp',
@@ -52,5 +52,5 @@ pkg_mod.generate(libraries : lib,
                  version : '1.0',
                  name : 'libqtappfw-applauncher',
                  filebase : 'qtappfw-applauncher',
-                 requires: 'Qt5Qml',
+                 requires: 'Qt6Qml',
                  description : 'Library wrapping AGL AppLauncher API in Qt objects')

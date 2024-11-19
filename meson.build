@@ -19,7 +19,7 @@ project (
   ['cpp'],
   version : '2.0.1',
   license : 'Apache-2.0',
-  meson_version : '>= 0.49.0',
+  meson_version : '>= 0.59.0',
   default_options :
     [
       'warning_level=1',
@@ -29,7 +29,7 @@ project (
     ],
 )
 
-qt5 = import('qt5')
+qt = import('qt6')
 
 #subdir('docs')
 
