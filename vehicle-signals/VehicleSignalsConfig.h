@@ -16,6 +16,8 @@ class VehicleSignalsConfig
 public:
         explicit VehicleSignalsConfig(const QString &hostname,
 				      const unsigned port,
+				      const bool useTls,
+				      const QString &caCertFileName,
 				      const QByteArray &caCert,
 				      const QString &tlsServerName,
 				      const QString &authToken);
@@ -24,6 +26,8 @@ public:
 
 	QString hostname() { return m_hostname; };
 	unsigned port() { return m_port; };
+	bool useTls() { return m_useTls; };
+	QString caCertFileName() { return m_caCertFileName; };
 	QByteArray caCert() { return m_caCert; };
 	QString tlsServerName() { return m_tlsServerName; };
 	QString authToken() { return m_authToken; };
@@ -33,6 +37,8 @@ public:
 private:
 	QString m_hostname;
 	unsigned m_port;
+	bool m_useTls;
+	QString m_caCertFileName;
 	QByteArray m_caCert;
 	QString m_tlsServerName;
 	QString m_authToken;
