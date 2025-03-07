@@ -14,22 +14,22 @@
 
 #include "VehicleSignalsConfig.h"
 
-#define DEFAULT_CLIENT_KEY_FILE  "/etc/kuksa-val/Client.key"
-#define DEFAULT_CLIENT_CERT_FILE "/etc/kuksa-val/Client.pem"
-#define DEFAULT_CA_CERT_FILE     "/etc/kuksa-val/CA.pem"
-
 VehicleSignalsConfig::VehicleSignalsConfig(const QString &hostname,
 					   const unsigned port,
+					   const bool useTls,
+					   const QString &caCertFileName,
 					   const QByteArray &caCert,
 					   const QString &tlsServerName,
 					   const QString &authToken) :
 	m_hostname(hostname),
 	m_port(port),
+	m_useTls(useTls),
+	m_caCertFileName(caCertFileName),
 	m_caCert(caCert),
 	m_tlsServerName(tlsServerName),
 	m_authToken(authToken),
-	m_verbose(0),
-	m_valid(true)
+	m_valid(true),
+	m_verbose(0)
 {
 	// Potentially could do some certificate validation here...
 }
@@ -42,7 +42,7 @@ VehicleSignalsConfig::VehicleSignalsConfig(const QString &appname)
 	if (!pSettings)
 		return;
 
-	m_hostname = pSettings->value("kuksa-client/server", "localhost").toString();
+	m_hostname = pSettings->value("kuksa-client/hostname", "localhost").toString();
 	if (m_hostname.isEmpty()) {
 		qCritical() << "Invalid server hostname";
 		return;
@@ -54,22 +54,22 @@ VehicleSignalsConfig::VehicleSignalsConfig(const QString &appname)
 		return;
 	}
 
-	QString caCertFileName = pSettings->value("kuksa-client/ca-certificate", DEFAULT_CA_CERT_FILE).toString();
-	if (caCertFileName.isEmpty()) {
-		qCritical() << "Invalid CA certificate filename";
-		return;
+	m_useTls = pSettings->value("kuksa-client/use-tls", false).toBool();
+
+	m_caCertFileName = pSettings->value("kuksa-client/ca-certificate", "").toString();
+	if (!m_caCertFileName.isEmpty()) {
+		QFile caCertFile(m_caCertFileName);
+		if (!caCertFile.open(QIODevice::ReadOnly)) {
+			qCritical() << "Could not open CA certificate file " << m_caCertFileName;
+			return;
+		}
+		QByteArray caCertData = caCertFile.readAll();
+		if (caCertData.isEmpty()) {
+			qCritical() << "Invalid CA certificate file";
+			return;
+		}
+		m_caCert = caCertData;
 	}
-	QFile caCertFile(caCertFileName);
-	if (!caCertFile.open(QIODevice::ReadOnly)) {
-		qCritical() << "Could not open CA certificate file";
-		return;
-	}
-	QByteArray caCertData = caCertFile.readAll();
-	if (caCertData.isEmpty()) {
-		qCritical() << "Invalid CA certificate file";
-		return;
-	}
-	m_caCert = caCertData;
 
 	m_tlsServerName = pSettings->value("kuksa-client/tls-server-name", "").toString();
 

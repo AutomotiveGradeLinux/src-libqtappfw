@@ -23,18 +23,23 @@ VehicleSignals::VehicleSignals(const VehicleSignalsConfig &config, QObject *pare
 	host += QString::number(m_config.port());
 
 	std::shared_ptr<grpc::Channel> channel;
-	if (!m_config.caCert().isEmpty()) {
+	if (m_config.useTls()) {
 		qInfo() << "Using TLS";
-		grpc::SslCredentialsOptions options;
-		options.pem_root_certs = m_config.caCert().toStdString();
-		if (!m_config.tlsServerName().isEmpty()) {
-			grpc::ChannelArguments args;
-			auto target = m_config.tlsServerName();
-			qInfo() << "Overriding TLS target name with " << target;
-			args.SetString(GRPC_SSL_TARGET_NAME_OVERRIDE_ARG, target.toStdString());
-			channel = grpc::CreateCustomChannel(host.toStdString(), grpc::SslCredentials(options), args);
+		if (!m_config.caCert().isEmpty()) {
+			qInfo() << "Using CA certificate " << m_config.caCertFileName();
+			grpc::SslCredentialsOptions options;
+			options.pem_root_certs = m_config.caCert().toStdString();
+			if (!m_config.tlsServerName().isEmpty()) {
+				grpc::ChannelArguments args;
+				auto target = m_config.tlsServerName();
+				qInfo() << "Overriding TLS server name with " << target;
+				args.SetString(GRPC_SSL_TARGET_NAME_OVERRIDE_ARG, target.toStdString());
+				channel = grpc::CreateCustomChannel(host.toStdString(), grpc::SslCredentials(options), args);
+			} else {
+				channel = grpc::CreateChannel(host.toStdString(), grpc::SslCredentials(options));
+			}
 		} else {
-			channel = grpc::CreateChannel(host.toStdString(), grpc::SslCredentials(options));
+			channel = grpc::CreateChannel(host.toStdString(), grpc::SslCredentials(grpc::SslCredentialsOptions()));
 		}
 	} else {
 		channel = grpc::CreateChannel(host.toStdString(), grpc::InsecureChannelCredentials());
