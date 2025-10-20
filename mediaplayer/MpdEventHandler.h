@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Konsulko Group
+ * Copyright (C) 2022,2025 Konsulko Group
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@
 #include <QObject>
 #include <QVariant>
 #include <mpd/client.h>
-
-// Use a 60s timeout on our MPD connection
-#define MPD_CONNECTION_TIMEOUT	60000
 
 class MpdEventHandler : public QObject
 {

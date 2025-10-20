@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2023 Konsulko Group
+ * Copyright (C) 2019-2023,2025 Konsulko Group
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -13,9 +13,9 @@
 #define ROUND9(x) (round((x) * 1000000000) / 1000000000)
 
 Navigation::Navigation(VehicleSignals *vs, bool router, QObject * parent) :
+	QObject(parent),
 	m_vs(vs),
-	m_router(router),
-	QObject(parent)
+	m_router(router)
 {
 	QObject::connect(m_vs, &VehicleSignals::connected, this, &Navigation::onConnected);
 

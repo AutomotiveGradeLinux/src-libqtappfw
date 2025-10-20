@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2019,2022,2025 Konsulko Group
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "abstractnetworkmodel.h"
 #include "connectionprofile.h"
 #include <QDebug>
@@ -11,8 +17,8 @@ AbstractNetworkModel::AbstractNetworkModel(QObject *parent)
 void AbstractNetworkModel::addNetwork(ConnectionProfile *network)
 {
 	int start_rows = rowCount();
-	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	m_networks.insert(rowCount(), network);
+	beginInsertRows(QModelIndex(), start_rows, start_rows);
+	m_networks.insert(start_rows, network);
 	endInsertRows();
 }
 

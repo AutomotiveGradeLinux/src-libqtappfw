@@ -5,7 +5,6 @@
  */
 
 #include <QDebug>
-#include <QSettings>
 #include <QUrl>
 #include <QFile>
 #include <QtConcurrent>

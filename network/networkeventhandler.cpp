@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Konsulko Group
+ * Copyright (C) 2022,2025 Konsulko Group
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ bool NetworkEventHandler::populateAdapterProperties(GVariant *in, QVariantMap &o
 	if (!props_dict)
 		return false;
 
-	gchar *p = NULL;
 	gboolean value = FALSE;
         if (g_variant_dict_lookup(props_dict, "Connected", "b", &value))
 		out.insert(QString("Connected"), QVariant((bool) value));

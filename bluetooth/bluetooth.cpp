@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Konsulko Group
+ * Copyright (C) 2018-2022,2025 Konsulko Group
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ Bluetooth::Bluetooth(bool register_agent,
 	m_agent(register_agent),
 	m_handle_media(handle_media),
 	m_connected(false),
-	m_connected_device(""),
-	m_media_connected(false)
+	m_media_connected(false),
+	m_connected_device("")
 {
 	m_bluetooth = new BluetoothModel();
 	BluetoothModelFilter *m_model = new BluetoothModelFilter();
@@ -224,6 +224,7 @@ void Bluetooth::media_control(MediaAction action)
 	case Loop:
 		// Not implemented, but potentially possible with bluez-glib addition
 	default:
+		action_allowed = false;
 		break;
 	}
 #ifdef BLUETOOTH_EVENT_DEBUG
@@ -305,7 +306,7 @@ void Bluetooth::refresh_device_list(void)
 
 void Bluetooth::refresh_media_state()
 {
-	if (!(m_handle_media && m_connected && m_connected_device.count()))
+	if (!(m_handle_media && m_connected && m_connected_device.size()))
 		return;
 
 	QByteArray device_ba = m_connected_device.toLocal8Bit();
